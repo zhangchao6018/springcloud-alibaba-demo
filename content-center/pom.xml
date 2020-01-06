@@ -19,11 +19,23 @@
     </properties>
 
     <dependencies>
+        <!--接入阿里云流控SDK-->
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba.csp</groupId>-->
+<!--            <artifactId>spring-boot-starter-ahas-sentinel-client</artifactId>-->
+<!--            <version>1.5.0</version>-->
+<!--        </dependency>-->
         <!--sentinel-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
             <version>RELEASE</version>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.alibaba.csp</groupId>-->
+<!--                    <artifactId>sentinel-transport-simple-http</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
         <!--actuator-->
         <dependency>
@@ -31,10 +43,11 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!--feign连接池 性能优化-->
+        <!--版本冲突会导致java.lang.IllegalStateException: original request is required-->
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-httpclient</artifactId>
-            <version>9.5.0</version>
+            <version>RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

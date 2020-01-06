@@ -17,6 +17,13 @@ spring:
         # \u6307\u5B9Anacos server\u5730\u5740
         server-addr: localhost:8848
         cluster-name: BeiJing
+    sentinel:
+      filter:
+        # 打开/关闭对springmvc 端点的保护  打开会导致 sentinel控制台看不到微服务的端点
+        enabled: true
+      transport:
+        #指定sentinel 控制台的地址
+        dashboard: localhost:8080
   application:
     name: content-center
 server:
@@ -44,6 +51,9 @@ logging:
 #      user-center:
 #        loggerLevel: full
 feign:
+  sentinel:
+    # 为feign整合setinel
+    enabled : true
   client:
     config:
       # 想要调用的微服务的名称
@@ -62,4 +72,11 @@ management:
   endpoints:
     web:
       exposure:
-        incloud: '*'
+        include: '*'
+
+#ahas:
+#  namespace: default
+#  license: 0f9ee689413445088be1967f5b00c1b4
+#project:
+#  name: content-center
+
