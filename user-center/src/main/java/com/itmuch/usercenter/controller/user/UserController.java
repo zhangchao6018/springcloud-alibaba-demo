@@ -22,12 +22,11 @@ public class UserController {
   private UserRepository userRepository;
 
   @GetMapping("/{id}")
-  public Optional<User> findById(@PathVariable Long id) {
+  public Optional<User> findById(@PathVariable Integer id) {
     log.info("我被请求了...");
     Optional<User> byId = userRepository.findById(id);
     System.out.println(byId);
-    User user = new User(1l, "超超", "超", "本人");
-    return Optional.of(user);
+    return Optional.of(byId.get());
     //return this.userRepository.findById(id);
   }
 

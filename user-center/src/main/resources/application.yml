@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/user_center
+    url: jdbc:mysql://127.0.0.1:3306/user_center?autoReconnect=true&useSSL=false&characterEncoding=utf-8
     hikari:
       username: root
       password: root
@@ -14,6 +14,7 @@ spring:
     hibernate:
       ddl-auto: update  # \u7B2C\u4E00\u6B21\u5EFA\u8868create  \u540E\u9762\u7528update\uFF0C\u8981\u4E0D\u7136\u6BCF\u6B21\u91CD\u542F\u90FD\u4F1A\u65B0\u5EFA\u8868
     show-sql: true
+    open-in-view: true
   cloud:
     nacos:
       discovery:
@@ -23,6 +24,15 @@ spring:
         metadata:
           param1: haha
           version: 1.0.1
+    stream:
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+      bindings:
+        input:
+          destination: stream-test-topic
+          #rocketmq 一定要设置值 其他mq非必要
+          group: binder-group
 
   application:
     name: user-center
@@ -36,3 +46,7 @@ logging:
     org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
 server:
   port: 8010
+
+rocketmq:
+  name-server: 127.0.0.1:9876
+
