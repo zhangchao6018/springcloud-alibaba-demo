@@ -76,10 +76,10 @@ public class ShareService {
         // 2. 如果是pass，name将发送消息给rocketmq，让用户中心去消费，并为发布人添加积分
         if(AuditStatusEnum.PASS.equals(auditDto.getAuditStatusEnum())){
             //发送半消息
-            //prepareMessage(id, auditDto, share);
+            prepareMessage(id, auditDto, share);
 
             // 发送普通消息,并入库
-            nomalMessage(id, auditDto, share);
+//            nomalMessage(id, auditDto, share);
             log.info("消息发送成功。。。。");
 
         }else {

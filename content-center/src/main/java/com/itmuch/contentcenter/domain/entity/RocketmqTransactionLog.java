@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
@@ -19,9 +20,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
+@Accessors(chain = true)
 public class RocketmqTransactionLog {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column
