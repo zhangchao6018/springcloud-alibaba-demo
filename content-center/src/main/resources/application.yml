@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/content_center
+    url: jdbc:mysql://127.0.0.1:3306/content_center?autoReconnect=true&useSSL=false&characterEncoding=utf-8
     hikari:
       username: root
       password: root
@@ -24,6 +24,14 @@ spring:
       transport:
         #指定sentinel 控制台的地址
         dashboard: localhost:8080
+    stream:
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+      bindings:
+        output:
+          destination: stream-test-topic
+
   application:
     name: content-center
 server:
@@ -43,6 +51,7 @@ ribbon:
 logging:
   level:
     com.itmuch.contentcenter.feignclient.UserCenterFeignClient: debug
+    com.alibaba.nacos: error
 #feign 细粒度配置
 #feign:
 #  client:
@@ -79,4 +88,8 @@ management:
 #  license: 0f9ee689413445088be1967f5b00c1b4
 #project:
 #  name: content-center
-
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    #小坑 必须指定group
+    group: test-group

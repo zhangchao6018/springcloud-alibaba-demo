@@ -13,6 +13,8 @@ import com.itmuch.contentcenter.service.ShareService;
 import com.itmuch.contentcenter.service.TestSentinelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -141,5 +143,21 @@ public class TestController {
     //Sentinel 1.6 可以处理throwable
     public String fallback( String a){
         return "限流了或者降级了  fallback";
+    }
+
+
+    @Autowired
+    private Source source;
+    //测试stream发送消息
+    @GetMapping("/test-stream")
+    public String testStream(@RequestParam(required = false) String a){
+
+        source.output()
+                .send(
+                        MessageBuilder.withPayload("消息体2333")
+                        .build()
+                );
+
+        return "success";
     }
 }

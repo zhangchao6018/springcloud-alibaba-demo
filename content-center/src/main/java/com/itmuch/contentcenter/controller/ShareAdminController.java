@@ -1,6 +1,6 @@
 package com.itmuch.contentcenter.controller;
 
-import com.itmuch.contentcenter.domain.dto.ShareAuidtDto;
+import com.itmuch.contentcenter.domain.dto.ShareAuditDto;
 import com.itmuch.contentcenter.domain.entity.Share;
 import com.itmuch.contentcenter.service.ShareService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class ShareAdminController {
     private final ShareService shareService;
 
     @PostMapping("/audit/{id}")
-    public Share auditbyId(@PathVariable Integer id , @RequestBody ShareAuidtDto auidtDto){
+    public Share auditbyId(@PathVariable Integer id , @RequestBody ShareAuditDto auidtDto){
         //todo 认证授权
         return this.shareService.auditbyId(id,auidtDto);
     }
