@@ -1,0 +1,24 @@
+server:
+  port: 8040
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+    gateway:
+      discovery:
+        locator:
+          # \u8BA9 \u7F51\u5173\u901A\u8FC7\u670D\u52A1\u53D1\u73B0\u7EC4\u4EF6\u627E\u5230\u5176\u4ED6\u670D\u52A1
+          enabled: true
+# 查看过滤器工厂执行顺序 http://localhost:8040/actuator/gateway/globalfilters
+#@see  https://www.imooc.com/article/290822
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
