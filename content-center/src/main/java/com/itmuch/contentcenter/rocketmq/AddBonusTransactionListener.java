@@ -1,5 +1,6 @@
 package com.itmuch.contentcenter.rocketmq;
 
+import com.alibaba.fastjson.JSON;
 import com.itmuch.contentcenter.dao.RocketmqTransactionLogMapper;
 import com.itmuch.contentcenter.domain.dto.ShareAuditDto;
 import com.itmuch.contentcenter.domain.entity.RocketmqTransactionLog;
@@ -41,10 +42,20 @@ public class AddBonusTransactionListener implements RocketMQLocalTransactionList
         MessageHeaders headers = message.getHeaders();
         String transactionId = (String) headers.get(RocketMQHeaders.TRANSACTION_ID);
         Integer shareId = Integer.valueOf((String) headers.get("share_id"));
+        ShareAuditDto shareAuditDto;
+
+        //stream编程模型  则args为null
+        if (args==null){
+            String dto = (String) headers.get("dto");
+            shareAuditDto = JSON.parseObject(dto, ShareAuditDto.class);
+        }else {
+            //rocketmq原生事务编程模型
+            shareAuditDto=(ShareAuditDto)args;
+        }
 
         try {
             log.info("执行审核信息保存(本地事务)....");
-            this.shareService.auditByIdWithRocketMqLog( shareId, (ShareAuditDto)args,transactionId);
+            this.shareService.auditByIdWithRocketMqLog( shareId,  shareAuditDto,transactionId);
             return RocketMQLocalTransactionState.COMMIT;
         } catch (Exception e) {
             log.info("保存审核信息异常....");

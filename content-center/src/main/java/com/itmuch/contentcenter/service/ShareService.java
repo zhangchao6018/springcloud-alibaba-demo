@@ -1,5 +1,6 @@
 package com.itmuch.contentcenter.service;
 
+import com.alibaba.fastjson.JSON;
 import com.itmuch.contentcenter.dao.RocketmqTransactionLogMapper;
 import com.itmuch.contentcenter.dao.ShareMapper;
 import com.itmuch.contentcenter.domain.dto.ShareAuditDto;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +52,10 @@ public class ShareService {
     @Autowired
     RocketmqTransactionLogMapper rocketmqTransactionLogMapper;
 
+    @Autowired
+    Source source;
+
+
     public User findById(Integer userId) {
 //        String forObject = restTemplate.getForObject("http://user-center/users/{id}", String.class, userId);
         User user = userCenterFeignClient.findById(userId);
@@ -75,10 +81,23 @@ public class ShareService {
 
         // 2. 如果是pass，name将发送消息给rocketmq，让用户中心去消费，并为发布人添加积分
         if(AuditStatusEnum.PASS.equals(auditDto.getAuditStatusEnum())){
-            //发送半消息
-            prepareMessage(id, auditDto, share);
+            //spring-stream编程模型重构
+            String  transactionId = UUID.randomUUID().toString();
+            this.source.output()
+                    .send(MessageBuilder.withPayload(
+                            UserAddBonusMsgDto.builder()
+                                    .userId(share.getUserId())
+                                    .bonus(50)
+                                    .build())
+                            .setHeader(RocketMQHeaders.TRANSACTION_ID, transactionId)
+                            .setHeader("share_id",id)
+                            .setHeader("dto", JSON.toJSONString(auditDto))
+                            .build());
 
-            // 发送普通消息,并入库
+            //rocketmq 原生方式发送半消息
+//            prepareMessage(id, auditDto, share);
+
+            // 发送普通消息,并入库（demo）
 //            nomalMessage(id, auditDto, share);
             log.info("消息发送成功。。。。");
 
@@ -90,6 +109,12 @@ public class ShareService {
 
     }
 
+    /**
+     * 发送半消息 rocketmq 原生方式
+     * @param id
+     * @param auditDto
+     * @param share
+     */
     private void prepareMessage(Integer id, ShareAuditDto auditDto, Share share) {
         String  transactionId = UUID.randomUUID().toString();
         log.info("transactionId={}",transactionId);

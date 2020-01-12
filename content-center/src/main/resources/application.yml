@@ -28,9 +28,17 @@ spring:
       rocketmq:
         binder:
           name-server: 127.0.0.1:9876
+        bindings:
+          output:
+            producer:
+              transactional: true
+              group: wx-add-bonus-group
+
       bindings:
         output:
-          destination: stream-test-topic
+          #测试
+          #destination: stream-test-topic
+          destination: add-bonus
 
   application:
     name: content-center
@@ -88,8 +96,15 @@ management:
 #  license: 0f9ee689413445088be1967f5b00c1b4
 #project:
 #  name: content-center
-rocketmq:
-  name-server: 127.0.0.1:9876
-  producer:
-    #小坑 必须指定group
-    group: test-group
+
+## stream整合rocketmq
+#rocketmq:
+#  name-server: 127.0.0.1:9876
+#  producer:
+#    #小坑 必须指定group
+#    group: test-group
+
+jwt:
+  secret: 2333hahahahahahha
+  # 有效期，单位秒，默认2周
+  expire-time-in-second: 1209600
