@@ -6,6 +6,7 @@ import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.context.ContextUtil;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.itmuch.contentcenter.auth.CheckLogin;
 import com.itmuch.contentcenter.domain.dto.UserDto;
 import com.itmuch.contentcenter.domain.entity.User;
 import com.itmuch.contentcenter.feignclient.TestBaiduFeignClient;
@@ -37,6 +38,7 @@ public class TestController {
     private TestBaiduFeignClient testBaiduFeignClient;
 
     @GetMapping("/test1/{userId}")
+    @CheckLogin
     public User test(@PathVariable Integer userId ){
         //log.info("我被请求了....");
         return shareService.findById(userId);
