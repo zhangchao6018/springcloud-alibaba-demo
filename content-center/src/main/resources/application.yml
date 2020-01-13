@@ -76,6 +76,8 @@ feign:
       # 想要调用的微服务的名称
       default:
         loggerLevel: full
+        requestinterceptors:
+          - com.itmuch.contentcenter.interceptor.TokenRelayRequestInterceptor
   httpclient:
     #让feign使用apache httpclient作请求，而不是默认的urlconnecton
     enabled: true

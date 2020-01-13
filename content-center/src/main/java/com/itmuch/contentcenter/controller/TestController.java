@@ -6,6 +6,7 @@ import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.context.ContextUtil;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.itmuch.contentcenter.auth.CheckAuthorization;
 import com.itmuch.contentcenter.auth.CheckLogin;
 import com.itmuch.contentcenter.domain.dto.UserDto;
 import com.itmuch.contentcenter.domain.entity.User;
@@ -15,9 +16,19 @@ import com.itmuch.contentcenter.service.TestSentinelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Description:
@@ -162,4 +173,48 @@ public class TestController {
 
         return "success";
     }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @GetMapping("/testTemplate/{userId}")
+    public UserDto testTemplate(@PathVariable Integer userId){
+            return restTemplate.getForObject("http://user-center/users/{userId}", UserDto.class,userId);
+
+    }
+
+    @GetMapping("/tokenRelay/{userId}")
+    public ResponseEntity<UserDto> tokenRelay(@PathVariable Integer userId){
+        //1.从header里面获取token
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes attributes = (ServletRequestAttributes)requestAttributes;
+        HttpServletRequest request = attributes.getRequest();
+        String token = request.getHeader("X-Token");
+
+
+        //2.设置请求头
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-Token", token);
+
+        //3. 发送请求
+        return this.restTemplate
+                .exchange("http://user-center/users/{userId}",
+                        HttpMethod.GET,
+                        new HttpEntity<>(httpHeaders),
+                        UserDto.class,
+                        userId
+                        );
+
+    }
+
+
+
+
+    @GetMapping("/query/{userId}")
+    @CheckAuthorization("admin")
+    public UserDto query(@PathVariable Integer userId){
+        return restTemplate.getForObject("http://user-center/users/{userId}", UserDto.class,userId);
+
+    }
+
 }
