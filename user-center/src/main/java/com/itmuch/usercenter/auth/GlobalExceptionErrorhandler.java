@@ -23,7 +23,7 @@ public class GlobalExceptionErrorhandler {
         log.warn("发生securityException 异常",e);
        return new ResponseEntity<ErrorBody>(
                 ErrorBody.builder()
-                        .body("Token非法")
+                        .body(e.getMessage())
                         .status(HttpStatus.UNAUTHORIZED.value())
                         .build(),
                HttpStatus.UNAUTHORIZED

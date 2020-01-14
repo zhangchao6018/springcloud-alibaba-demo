@@ -36,6 +36,13 @@ spring:
 
   application:
     name: user-center
+  zipkin:
+    base-url: http://127.0.0.1:9411/
+#    discoveryClientEnabled: false
+  sleuth:
+    sampler:
+      #抽样率(默认0.1)
+      probability: 1.0
 
 logging:
   level:
@@ -44,6 +51,7 @@ logging:
     org.hibernate: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+    org.springframework.cloud.sleuth: debug
 server:
   port: 8010
 
@@ -55,4 +63,3 @@ jwt:
   secret: 2333hahahahahahha
   # 有效期，单位秒，默认2周
   expire-time-in-second: 1209600
-

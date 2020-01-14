@@ -15,6 +15,8 @@ import com.itmuch.contentcenter.service.ShareService;
 import com.itmuch.contentcenter.service.TestSentinelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RestController
 @RequestMapping("/test")
+// 实时刷新nacos配置中心配置
+@RefreshScope
 public class TestController {
     @Autowired
     private ShareService shareService;
@@ -217,4 +221,12 @@ public class TestController {
 
     }
 
+
+    @Value("${my.config.username}")
+    private String userName;
+    @GetMapping("/nacos-config")
+    public String testConfig(){
+        return userName;
+
+    }
 }

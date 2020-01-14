@@ -7,6 +7,13 @@ spring:
       # >+ 6.X  com.mysql.cj.jdbc.Driver
       # <=5.x com.mysql.jdbc.Driver
       driver-class-name: com.mysql.jdbc.Driver
+  zipkin:
+    base-url: http://127.0.0.1:9411/
+    #    discoveryClientEnabled: false
+  sleuth:
+    sampler:
+      #抽样率(默认0.1)
+      probability: 1.0
 #解决feignClient 重复实例名字bean无法启动的问题
   main:
     allow-bean-definition-overriding: true
@@ -40,8 +47,7 @@ spring:
           #destination: stream-test-topic
           destination: add-bonus
 
-  application:
-    name: content-center
+
 server:
   port: 8011
 
